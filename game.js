@@ -8,7 +8,7 @@ function Game(){
   
   const announcement = document.getElementById('announcement');
   announcement.innerText = 'Current player: ' + currentPlayer.marker;
-  
+
   function play(){
     board.display();
   }
@@ -18,7 +18,7 @@ function Game(){
 
     board.registerChoice(squareId, player.marker);
 
-    currentPlayer = player1 ? player2 : player1;
+    currentPlayer = currentPlayer === player1 ? player2 : player1;
     console.log(currentPlayer);
   }
 
