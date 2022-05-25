@@ -16,20 +16,28 @@ function Game(){
   }
 
   function clickHandler(event, player = currentPlayer){
-    console.log('\ncurrent player: ' + player.marker);
     let squareId = event.target.id;
-    console.log('square chosen: ' + squareId);
-    board.registerChoice(squareId, player.marker);
+
+    if(board.board[squareId].isFilled()) return;
+
+    board.registerChoice(squareId, player);
 
     currentPlayer = currentPlayer === player1 ? player2 : player1;
-    console.log('current player switched, new current player: ' + currentPlayer.marker);
+  }
+
+  function winConditionMet(){
+
   }
 
   return { play };
 }
 
 function Player(marker){
-  this.marker = marker;
+  // this.marker = marker;
+  return {
+    marker: marker,
+    choices: [],
+  }
 }
 
 function Board(cbClickHandler){
@@ -51,14 +59,12 @@ function Board(cbClickHandler){
     })
   }
 
-  function registerChoice(squareId, marker) {
-    console.log(`square  chosen: ${squareId}, marker: ${marker}`);
+  function registerChoice(squareId, player) {
+    board[squareId].value = player.marker;
+    document.getElementById(squareId).innerText = player.marker;
 
-    if (board[squareId].isFilled()) return;
-
-    board[squareId].value = marker;
-    document.getElementById(squareId).innerText = marker;
-    console.log(board);
+    player.choices.push(squareId);
+    console.log(player);
   }
 
   return {board, display, registerChoice};
