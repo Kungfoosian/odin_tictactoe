@@ -4,6 +4,17 @@ function Game(){
   let player2 = new Player('O');
   let currentPlayer = player1;
 
+  const WIN_CONDITIONS = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+  ]
+
   // console.log(board);
   
   const TURNS = 9;
@@ -25,8 +36,9 @@ function Game(){
     currentPlayer = currentPlayer === player1 ? player2 : player1;
   }
 
-  function winConditionMet(){
-
+  function winConditionMet(player){
+    let choices = player.choices;
+    
   }
 
   return { play };
@@ -64,7 +76,7 @@ function Board(cbClickHandler){
     document.getElementById(squareId).innerText = player.marker;
 
     player.choices.push(squareId);
-    console.log(player);
+    // console.log(player);
   }
 
   return {board, display, registerChoice};
