@@ -15,7 +15,7 @@ function Game(){
     [0, 4, 8],
     [2, 4, 6]
   ]
-  
+
   function play(){
     board.display();
   }
@@ -25,23 +25,27 @@ function Game(){
   
   function clickHandler(event, player = currentPlayer){
     if(winConditionMet) return;
-
+    
     let squareId = event.target.id;
     
     if(board.board[squareId].isFilled()) return;
     
     board.registerChoice(squareId, player);
-
+    
     if (player.choices.length >= 3 && checkForWin(player)) {
       announcement.innerText = 'Winner: ' + currentPlayer.marker;
-
+      
       console.log('winner: ' + player.marker);
     } else {
       currentPlayer = currentPlayer === player1 ? player2 : player1;
-
+      
       announcement.innerText = 'Current player: ' + currentPlayer.marker;
     }
     
+    if(!board.board.some(square => square.value === undefined)){
+      announcement.innerText = 'Tie';
+      return;
+    }
   }
 
   function checkForWin(player){
@@ -59,7 +63,7 @@ function Game(){
     return false;
   }
 
-  return { play };
+  return { play, reset };
 }
 
 function Player(marker){
@@ -70,8 +74,6 @@ function Player(marker){
 }
 
 function Board(cbClickHandler){
-  const container = document.getElementById('board-container');
-
   let board = [Square(), Square(), Square(), Square(), Square(), Square(), Square(), Square(), Square()];
 
   function display(){
@@ -105,6 +107,18 @@ function Square(){
     update(newValue) { this.value = newValue },
   };
 }
+
+
+const container = document.getElementById('board-container');
+const resetBtn = document.getElementById('reset');
+resetBtn.addEventListener('click', e => {
+  let childrenArray = Array.from(container.children);
+  childrenArray.forEach(child => container.removeChild(child));
+
+  game = Game();
+  game.play();
+})
+
 
 let game = Game();
 game.play();
