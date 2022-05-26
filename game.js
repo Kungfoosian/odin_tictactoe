@@ -3,8 +3,9 @@ function Game(){
   let player1 = new Player('X');
   let player2 = new Player('O');
   let currentPlayer = player1;
+  let winConditionMet = false;
 
-  const WIN_CONDITIONS = [
+  const WIN_PATTERNS = [
     [0, 1, 2],
     [3, 4, 5],
     [6, 7, 8],
@@ -14,38 +15,54 @@ function Game(){
     [0, 4, 8],
     [2, 4, 6]
   ]
-
-  // console.log(board);
   
-  const TURNS = 9;
-  
-  const announcement = document.getElementById('announcement');
-  announcement.innerText = 'Current player: ' + currentPlayer.marker;
-
   function play(){
     board.display();
   }
 
+  const announcement = document.getElementById('announcement');
+  announcement.innerText = 'Current player: ' + currentPlayer.marker;
+  
   function clickHandler(event, player = currentPlayer){
+    if(winConditionMet) return;
+
     let squareId = event.target.id;
-
+    
     if(board.board[squareId].isFilled()) return;
-
+    
     board.registerChoice(squareId, player);
 
-    currentPlayer = currentPlayer === player1 ? player2 : player1;
+    if (player.choices.length >= 3 && checkForWin(player)) {
+      announcement.innerText = 'Winner: ' + currentPlayer.marker;
+
+      console.log('winner: ' + player.marker);
+    } else {
+      currentPlayer = currentPlayer === player1 ? player2 : player1;
+
+      announcement.innerText = 'Current player: ' + currentPlayer.marker;
+    }
+    
   }
 
-  function winConditionMet(player){
+  function checkForWin(player){
     let choices = player.choices;
-    
+
+    for(let i = 0; i < WIN_PATTERNS.length; i++){
+      let pattern = WIN_PATTERNS[i];
+
+      if (pattern.every(element => choices.includes(element))) {
+        winConditionMet = true;
+        return true;
+      }
+    }
+
+    return false;
   }
 
   return { play };
 }
 
 function Player(marker){
-  // this.marker = marker;
   return {
     marker: marker,
     choices: [],
@@ -75,8 +92,7 @@ function Board(cbClickHandler){
     board[squareId].value = player.marker;
     document.getElementById(squareId).innerText = player.marker;
 
-    player.choices.push(squareId);
-    // console.log(player);
+    player.choices.push(Number.parseInt(squareId));
   }
 
   return {board, display, registerChoice};
